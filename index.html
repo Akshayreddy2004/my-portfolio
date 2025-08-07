@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --background: #0c0c0c;
@@ -155,6 +156,7 @@ Available commands:
   <span class="section-title">about</span>      - Who is Akshay Reddy?
   <span class="section-title">projects</span>   - View my key projects
   <span class="section-title">skills</span>     - List of my technical skills
+  <span class="section-title">blog</span>       - Read my developer blog
   <span class="section-title">contact</span>    - How to get in touch
   <span class="section-title">clear</span>      - Clear the terminal screen`,
             
@@ -194,6 +196,18 @@ CGPA: 7.69`,
   - 3rd Place, Paper Presentation held by IBM (2023)
   - Geeks For Geeks Python Certificate
   - Simplilearn AIML for Engineers by IBM Certificate`,
+
+            blog: `
+<span class="section-title">My Developer Blog</span>
+
+<span class="project-title">Challenge: Lighting Issues in My ANPR Project</span>
+----------------------------------------------------
+While building my Automatic Numberplate Recognition project with OpenCV, I ran into a significant challenge: inconsistent lighting. Plates that were perfectly clear in daylight were almost impossible to read in shadows or at night.
+
+My initial approach wasn't working. To solve this, I implemented a series of image pre-processing steps. I used techniques like histogram equalization to normalize the image's brightness and contrast, and applied a bilateral filter to reduce noise while keeping the edges of the numbers sharp.
+
+This experience taught me that in machine learning, data preparation is just as important as the model itself. It was a great lesson in practical problem-solving.
+`,
             
             contact: `
 <span class="section-title">Contact Information</span>
@@ -202,21 +216,6 @@ CGPA: 7.69`,
   - <a href="https://github.com/Akshayreddy2004" target="_blank">GitHub: github.com/Akshayreddy2004</a>
   - Phone: +91 8125369337`,
         };
-
-        function typeText(element, text, callback) {
-            let i = 0;
-            element.innerHTML = '';
-            const interval = setInterval(() => {
-                if (i < text.length) {
-                    element.innerHTML += text.charAt(i);
-                    i++;
-                    terminal.scrollTop = terminal.scrollHeight;
-                } else {
-                    clearInterval(interval);
-                    if (callback) callback();
-                }
-            }, 10);
-        }
 
         function executeCommand(command) {
             const commandOutput = document.createElement('div');
@@ -241,7 +240,9 @@ CGPA: 7.69`,
         commandInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 const command = commandInput.value.trim().toLowerCase();
-                if (command) {
+                if (command === 'clear') {
+                     output.innerHTML = '';
+                } else if (command) {
                     executeCommand(command);
                 }
                 commandInput.value = '';
@@ -250,14 +251,12 @@ CGPA: 7.69`,
 
         function showWelcomeMessage() {
             const welcome = document.createElement('div');
-            const welcomeText = 'Booting KARE_OS... Done.\nConnecting to network... Done.\nWelcome to Akshay Reddy\'s Interactive Portfolio.\n\nType "help" to see available commands.';
+            welcome.innerHTML = 'Booting KARE_OS... Done.<br>Connecting to network... Done.<br>Welcome to Akshay Reddy\'s Interactive Portfolio.<br><br>Type "help" to see available commands.';
             output.appendChild(welcome);
-            typeText(welcome, welcomeText, () => {
-                commandInput.focus();
-            });
         }
 
         showWelcomeMessage();
+        commandInput.focus();
 
     </script>
 </body>
