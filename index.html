@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akshay Reddy :: AI/ML Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background: #0c0c0c;
+            --foreground: #00ff41;
+            --glow-color: rgba(0, 255, 65, 0.2);
+            --shadow-color: rgba(0, 255, 65, 0.4);
+            --scanline-color: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            background-color: var(--background);
+            color: var(--foreground);
+            font-family: 'Fira Code', monospace;
+            font-size: 16px;
+        }
+
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, var(--scanline-color) 50%), linear-gradient(90deg, var(--scanline-color) 50%, rgba(18, 16, 16, 0) 50%);
+            z-index: 2;
+            background-size: 100% 3px, 3px 100%;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+        
+        body::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: rgba(18, 16, 16, 0.1);
+            opacity: 0;
+            z-index: 2;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+        
+        @keyframes flicker {
+            0% { opacity: 0.1; }
+            20% { opacity: 1; }
+            100% { opacity: 0.1; }
+        }
+
+        #terminal {
+            width: 100%;
+            height: 100%;
+            padding: 15px;
+            overflow-y: auto;
+            text-shadow: 0 0 5px var(--shadow-color);
+            box-shadow: inset 0 0 100px var(--glow-color);
+        }
+        
+        #output {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .prompt {
+            color: var(--foreground);
+        }
+
+        #command-input {
+            background: transparent;
+            border: none;
+            color: var(--foreground);
+            font-family: 'Fira Code', monospace;
+            font-size: 1em;
+            width: calc(100% - 150px);
+            text-shadow: 0 0 5px var(--shadow-color);
+        }
+
+        #command-input:focus {
+            outline: none;
+        }
+
+        .input-line {
+            display: flex;
+        }
+
+        .cursor {
+            width: 10px;
+            height: 1.2em;
+            background-color: var(--foreground);
+            display: inline-block;
+            animation: blink 1s steps(2) infinite;
+        }
+
+        @keyframes blink {
+            0% { background-color: var(--foreground); }
+            50% { background-color: transparent; }
+        }
+
+        .command-output {
+            margin-bottom: 1em;
+        }
+
+        a {
+            color: var(--foreground);
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .project-title {
+            color: #fff;
+            font-weight: bold;
+        }
+        .section-title {
+            text-decoration: underline;
+            font-weight: bold;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="terminal">
+        <div id="output"></div>
+        <div class="input-line">
+            <span class="prompt">guest@akshay.dev:~$</span>
+            <input type="text" id="command-input" autofocus>
+            <span class="cursor"></span>
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const commandInput = document.getElementById('command-input');
+        
+        const commands = {
+            help: `
+Available commands:
+  <span class="section-title">about</span>      - Who is Akshay Reddy?
+  <span class="section-title">projects</span>   - View my key projects
+  <span class="section-title">skills</span>     - List of my technical skills
+  <span class="section-title">contact</span>    - How to get in touch
+  <span class="section-title">clear</span>      - Clear the terminal screen`,
+            
+            about: `
+<span class="section-title">CHALLA AKSHAY REDDY</span>
+AI/ML Engineer from Nellore, Andhra Pradesh.
+Skilled in Python, Artificial Intelligence and Machine learning, with proven experience delivering data-driven solutions and building innovative projects. Seeking to leverage my technical expertise and analytical skills to contribute to impactful initiatives and drive business growth.
+
+<span class="section-title">Education</span>
+B.Tech in Computer Science & Engineering (AIML), Graduating 2025
+Kalasalingam Academy of Research and Education
+CGPA: 7.69`,
+            
+            projects: `
+<span class="section-title">Key Projects</span>
+
+<span class="project-title">1. Real-time Sign Language & Audio Conversion</span>
+   Developed an Al-powered system for real-time sign language-to-audio and audio-to-sign conversion using CNNs. Built an integrated website to enhance user experience.
+
+<span class="project-title">2. Sentimental Analysis on Social Media</span>
+   Used NLP (Logistic Regression, SVC) to analyse social media sentiment. Developed a chatbot to provide real-time feedback and improve engagement.
+
+<span class="project-title">3. Automatic Numberplate Recognition (ANPR)</span>
+   Created an ANPR system using OpenCV for enhanced vehicle monitoring and security. Utilized computer vision for accurate license plate detection.
+
+<span class="project-title">4. Generative AI Voice Chatbot</span>
+   Developed an interactive AI chatbot using Streamlit and Google Generative AI. Accepts both text/voice input and provides audio responses.`,
+            
+            skills: `
+<span class="section-title">Technical Skills</span>
+  - Languages: Python
+  - Fields: AI/ML, NLP, Computer Vision
+  - Frameworks: OpenCV, Streamlit
+  - Models: CNN, Logistic Regression, SVC
+
+<span class="section-title">Certificates & Achievements</span>
+  - 3rd Place, Paper Presentation held by IBM (2023)
+  - Geeks For Geeks Python Certificate
+  - Simplilearn AIML for Engineers by IBM Certificate`,
+            
+            contact: `
+<span class="section-title">Contact Information</span>
+  - <a href="mailto:akshaychalla0923@gmail.com">Email: akshaychalla0923@gmail.com</a>
+  - <a href="https://linkedin.com/in/akshay-reddy-challa-958b97252/" target="_blank">LinkedIn: linkedin.com/in/akshay-reddy-challa</a>
+  - <a href="https://github.com/Akshayreddy2004" target="_blank">GitHub: github.com/Akshayreddy2004</a>
+  - Phone: +91 8125369337`,
+        };
+
+        function typeText(element, text, callback) {
+            let i = 0;
+            element.innerHTML = '';
+            const interval = setInterval(() => {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    terminal.scrollTop = terminal.scrollHeight;
+                } else {
+                    clearInterval(interval);
+                    if (callback) callback();
+                }
+            }, 10);
+        }
+
+        function executeCommand(command) {
+            const commandOutput = document.createElement('div');
+            commandOutput.classList.add('command-output');
+            
+            const promptLine = document.createElement('div');
+            promptLine.innerHTML = `<span class="prompt">guest@akshay.dev:~$</span> ${command}`;
+            output.appendChild(promptLine);
+
+            if (command === 'clear') {
+                output.innerHTML = '';
+            } else if (commands[command]) {
+                commandOutput.innerHTML = commands[command];
+                output.appendChild(commandOutput);
+            } else {
+                commandOutput.innerHTML = `Command not found: ${command}. Type 'help' for a list of available commands.`;
+                output.appendChild(commandOutput);
+            }
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        commandInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = commandInput.value.trim().toLowerCase();
+                if (command) {
+                    executeCommand(command);
+                }
+                commandInput.value = '';
+            }
+        });
+
+        function showWelcomeMessage() {
+            const welcome = document.createElement('div');
+            const welcomeText = 'Booting KARE_OS... Done.\nConnecting to network... Done.\nWelcome to Akshay Reddy\'s Interactive Portfolio.\n\nType "help" to see available commands.';
+            output.appendChild(welcome);
+            typeText(welcome, welcomeText, () => {
+                commandInput.focus();
+            });
+        }
+
+        showWelcomeMessage();
+
+    </script>
+</body>
+</html>
